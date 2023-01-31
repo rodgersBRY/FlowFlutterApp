@@ -26,13 +26,16 @@ class Auth extends GetxController {
       Map<String, dynamic> jsonData = json.decode(resp.body);
 
       if (resp.statusCode != 201) {
-        Get.snackbar(icon: Icon(Icons.error), 'Error', jsonData['message']);
+        Get.snackbar(
+            backgroundColor: Colors.grey,
+            icon: Icon(Icons.error),
+            'Error',
+            jsonData['message']);
         return false;
       }
 
       return true;
     } catch (err) {
-      Get.snackbar('Error', err.toString());
       throw Exception(err);
     }
   }
@@ -48,7 +51,11 @@ class Auth extends GetxController {
       Map<String, dynamic> jsonData = json.decode(resp.body);
 
       if (resp.statusCode != 200) {
-        Get.snackbar(icon: Icon(Icons.error), 'Error', jsonData['message']);
+        Get.snackbar(
+            backgroundColor: Colors.grey,
+            icon: Icon(Icons.error),
+            'Error',
+            jsonData['message']);
         return false;
       }
 
@@ -62,8 +69,10 @@ class Auth extends GetxController {
       sharedPreferences.setString('token', token);
       sharedPreferences.setString('email', email);
       sharedPreferences.setString('name', username);
-      
+
       return true;
-    } catch (err) {}
+    } catch (err) {
+      throw Exception(err);
+    }
   }
 }

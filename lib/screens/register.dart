@@ -3,6 +3,8 @@ import 'package:gap/gap.dart';
 import 'package:get/get.dart';
 
 import '../controllers/auth.dart';
+import '../widgets/custom_button.dart';
+import '../widgets/custom_textfield.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
@@ -17,8 +19,6 @@ class _RegisterPageState extends State<RegisterPage> {
   TextEditingController _emailController = TextEditingController();
   TextEditingController _nameController = TextEditingController();
   TextEditingController _passwordController = TextEditingController();
-
-  GlobalKey _formKey = GlobalKey();
 
   final _emailFocus = FocusNode();
   final _nameFocus = FocusNode();
@@ -55,41 +55,6 @@ class _RegisterPageState extends State<RegisterPage> {
     }
   }
 
-  Widget _buildTextFormField({
-    required String hintText,
-    required FocusNode focusNode,
-    required TextEditingController textController,
-  }) {
-    return TextFormField(
-      focusNode: focusNode,
-      controller: textController,
-      decoration: InputDecoration(
-        hintStyle: TextStyle(color: Colors.grey, fontSize: 18),
-        hintText: hintText,
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(25),
-          borderSide: BorderSide(color: Colors.grey, width: 1),
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(25),
-          borderSide: BorderSide(color: Colors.grey, width: 1),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(25),
-          borderSide: BorderSide(color: Colors.grey, width: 1),
-        ),
-      ),
-      style: TextStyle(color: Colors.white),
-      validator: (val) {
-        if (val!.isEmpty) {
-          Get.snackbar("Error", "Add a $hintText");
-          return "Error";
-        }
-        return null;
-      },
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -101,6 +66,7 @@ class _RegisterPageState extends State<RegisterPage> {
       child: SafeArea(
         child: Scaffold(
           body: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 30),
             decoration: BoxDecoration(
               image: DecorationImage(
                 image: AssetImage('assets/register.jpg'),
@@ -111,105 +77,150 @@ class _RegisterPageState extends State<RegisterPage> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
-                  'Create New Account',
+                  'Signup',
                   style: TextStyle(
-                    fontSize: 30,
+                    fontSize: 50,
                     fontWeight: FontWeight.bold,
                     color: Colors.cyan,
                   ),
                 ),
-                Form(
-                  key: _formKey,
-                  child: Padding(
-                    padding: const EdgeInsets.all(25),
-                    child: Column(
-                      children: [
-                        Gap(40),
-                        _buildTextFormField(
-                          hintText: 'Name',
-                          focusNode: _nameFocus,
-                          textController: _nameController,
-                        ),
-                        Gap(15),
-                        _buildTextFormField(
-                            hintText: 'Email',
-                            focusNode: _emailFocus,
-                            textController: _emailController),
-                        Gap(15),
-                        TextFormField(
-                          focusNode: _passwordFocus,
-                          controller: _passwordController,
-                          obscureText: true,
-                          decoration: InputDecoration(
-                            hintStyle:
-                                TextStyle(color: Colors.grey, fontSize: 18),
-                            hintText: 'Password',
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(25),
-                              borderSide:
-                                  BorderSide(color: Colors.grey, width: 1),
-                            ),
-                            enabledBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(25),
-                              borderSide:
-                                  BorderSide(color: Colors.grey, width: 1),
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(25),
-                              borderSide:
-                                  BorderSide(color: Colors.grey, width: 1),
-                            ),
-                          ),
-                          style: TextStyle(color: Colors.white),
-                          validator: (val) {
-                            if (val!.isEmpty) {
-                              Get.snackbar("Error", "Input password");
-                              return "Error";
-                            }
-                            return null;
-                          },
-                        ),
-                        Gap(60),
-                        GestureDetector(
-                          behavior: HitTestBehavior.opaque,
-                          child: Container(
-                            width: double.maxFinite,
-                            height: 55,
-                            decoration: BoxDecoration(
-                              color: Colors.cyan,
-                              borderRadius: BorderRadius.circular(25),
-                            ),
-                            child: Obx(() => Center(
-                                  child: _isLoading.value
-                                      ? CircularProgressIndicator(
-                                          color: Colors.white,
-                                        )
-                                      : Text(
-                                          'Sign Up',
-                                          style: TextStyle(
-                                            fontSize: 25,
-                                            fontWeight: FontWeight.bold,
-                                            color: Colors.white,
-                                          ),
-                                        ),
-                                )),
-                          ),
-                          onTap: register,
-                        ),
-                        Gap(20),
-                        GestureDetector(
-                          onTap: () {
-                            Get.offAllNamed('/login');
-                          },
-                          child: Text(
-                            'Login',
-                            style: TextStyle(color: Colors.white, fontSize: 18),
-                          ),
-                        )
-                      ],
-                    ),
+                Gap(40),
+                CustomTextField(
+                  hintText: 'Enter Your Name',
+                  icon: Icons.person,
+                  focusNode: _nameFocus,
+                  textEditingController: _nameController,
+                ),
+                Gap(20),
+                CustomTextField(
+                  hintText: 'Enter Your Email',
+                  icon: Icons.email,
+                  focusNode: _emailFocus,
+                  textEditingController: _emailController,
+                ),
+                Gap(20),
+                CustomTextField(
+                  hintText: "Enter Your Password",
+                  icon: Icons.key,
+                  obscureText: true,
+                  focusNode: _passwordFocus,
+                  textEditingController: _passwordController,
+                ),
+                Gap(50),
+                Obx(() => CustomButton(
+                      buttonText: _isLoading.value ? 'Loading...' : 'Signup',
+                      onTap: register,
+                    )),
+                Gap(20),
+                TextButton(
+                  onPressed: () {
+                    Get.offNamed('/login');
+                  },
+                  child: Text(
+                    'Already have an account? Signin',
+                    style: TextStyle(color: Colors.white),
                   ),
                 ),
+                // Text(
+                //   'Create New Account',
+                //   style: TextStyle(
+                //     fontSize: 30,
+                //     fontWeight: FontWeight.bold,
+                //     color: Colors.cyan,
+                //   ),
+                // ),
+                // Form(
+                //   key: _formKey,
+                //   child: Padding(
+                //     padding: const EdgeInsets.all(25),
+                //     child: Column(
+                //       children: [
+                //         Gap(40),
+                //         _buildTextFormField(
+                //           hintText: 'Name',
+                //           focusNode: _nameFocus,
+                //           textController: _nameController,
+                //         ),
+                //         Gap(15),
+                //         _buildTextFormField(
+                //             hintText: 'Email',
+                //             focusNode: _emailFocus,
+                //             textController: _emailController),
+                //         Gap(15),
+                //         TextFormField(
+                //           focusNode: _passwordFocus,
+                //           controller: _passwordController,
+                //           obscureText: true,
+                //           decoration: InputDecoration(
+                //             hintStyle:
+                //                 TextStyle(color: Colors.grey, fontSize: 18),
+                //             hintText: 'Password',
+                //             border: OutlineInputBorder(
+                //               borderRadius: BorderRadius.circular(25),
+                //               borderSide:
+                //                   BorderSide(color: Colors.grey, width: 1),
+                //             ),
+                //             enabledBorder: OutlineInputBorder(
+                //               borderRadius: BorderRadius.circular(25),
+                //               borderSide:
+                //                   BorderSide(color: Colors.grey, width: 1),
+                //             ),
+                //             focusedBorder: OutlineInputBorder(
+                //               borderRadius: BorderRadius.circular(25),
+                //               borderSide:
+                //                   BorderSide(color: Colors.grey, width: 1),
+                //             ),
+                //           ),
+                //           style: TextStyle(color: Colors.white),
+                //           validator: (val) {
+                //             if (val!.isEmpty) {
+                //               Get.snackbar("Error", "Input password");
+                //               return "Error";
+                //             }
+                //             return null;
+                //           },
+                //         ),
+                //         Gap(60),
+                //         GestureDetector(
+                //           behavior: HitTestBehavior.opaque,
+                //           child: Container(
+                //             width: double.maxFinite,
+                //             height: 55,
+                //             decoration: BoxDecoration(
+                //               color: Colors.cyan,
+                //               borderRadius: BorderRadius.circular(25),
+                //             ),
+                //             child: Obx(() => Center(
+                //                   child: _isLoading.value
+                //                       ? CircularProgressIndicator(
+                //                           color: Colors.white,
+                //                         )
+                //                       : Text(
+                //                           'Sign Up',
+                //                           style: TextStyle(
+                //                             fontSize: 25,
+                //                             fontWeight: FontWeight.bold,
+                //                             color: Colors.white,
+                //                           ),
+                //                         ),
+                //                 )),
+                //           ),
+                //           onTap: register,
+                //         ),
+                //         Gap(20),
+                //         GestureDetector(
+                //           onTap: () {
+                //             Get.offAllNamed('/login');
+                //           },
+                //           child: Text(
+                //             'Login',
+                //             style: TextStyle(color: Colors.white, fontSize: 18),
+                //           ),
+                //         )
+                //       ],
+                //     ),
+                //   ),
+                // ),
               ],
             ),
           ),

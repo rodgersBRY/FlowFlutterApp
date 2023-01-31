@@ -1,3 +1,5 @@
+import 'package:firebase_auth/widgets/custom_button.dart';
+import 'package:firebase_auth/widgets/custom_textfield.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:get/get.dart';
@@ -16,8 +18,6 @@ class _LoginPageState extends State<LoginPage> {
 
   TextEditingController _emailController = TextEditingController();
   TextEditingController _passwordController = TextEditingController();
-
-  GlobalKey _formKey = GlobalKey();
 
   final _emailFocus = FocusNode();
   final _passwordFocus = FocusNode();
@@ -50,43 +50,6 @@ class _LoginPageState extends State<LoginPage> {
     }
   }
 
-  Widget _buildTextFormField({
-    required String hintText,
-    required FocusNode focusNode,
-    required TextEditingController textController,
-    required bool obscureText,
-  }) {
-    return TextFormField(
-      focusNode: focusNode,
-      controller: textController,
-      obscureText: obscureText,
-      decoration: InputDecoration(
-        hintStyle: TextStyle(color: Colors.grey, fontSize: 18),
-        hintText: hintText,
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(25),
-          borderSide: BorderSide(color: Colors.grey, width: 1),
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(25),
-          borderSide: BorderSide(color: Colors.grey, width: 1),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(25),
-          borderSide: BorderSide(color: Colors.grey, width: 1),
-        ),
-      ),
-      style: TextStyle(color: Colors.white),
-      validator: (val) {
-        if (val!.isEmpty) {
-          Get.snackbar("Error", "Add a $hintText");
-          return "Error";
-        }
-        return null;
-      },
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -96,6 +59,7 @@ class _LoginPageState extends State<LoginPage> {
       },
       child: Scaffold(
         body: Container(
+          padding: EdgeInsets.symmetric(horizontal: 30),
           decoration: BoxDecoration(
             image: DecorationImage(
               image: AssetImage('assets/register.jpg'),
@@ -106,71 +70,54 @@ class _LoginPageState extends State<LoginPage> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(
-                'Log In to your Account',
+                'Login',
                 style: TextStyle(
-                  fontSize: 30,
+                  fontSize: 50,
                   fontWeight: FontWeight.bold,
                   color: Colors.cyan,
                 ),
               ),
               Gap(40),
-              Form(
-                  key: _formKey,
-                  child: Padding(
-                    padding: const EdgeInsets.all(16),
-                    child: Column(
-                      children: [
-                        _buildTextFormField(
-                          hintText: 'Email',
-                          focusNode: _emailFocus,
-                          textController: _emailController,
-                          obscureText: false,
-                        ),
-                        Gap(15),
-                        _buildTextFormField(
-                          hintText: 'Password',
-                          focusNode: _passwordFocus,
-                          textController: _passwordController,
-                          obscureText: true,
-                        ),
-                        Gap(40),
-                        GestureDetector(
-                          behavior: HitTestBehavior.opaque,
-                          child: Container(
-                            width: double.maxFinite,
-                            height: 55,
-                            decoration: BoxDecoration(
-                              color: Colors.cyan,
-                              borderRadius: BorderRadius.circular(25),
-                            ),
-                            child: Obx(() => Center(
-                                  child: _isLoading.value
-                                      ? CircularProgressIndicator(
-                                          color: Colors.white,
-                                        )
-                                      : Text(
-                                          'LOGIN',
-                                          style: TextStyle(
-                                            color: Colors.white,
-                                          ),
-                                        ),
-                                )),
-                          ),
-                          onTap: login,
-                        ),
-                        Gap(20),
-                        GestureDetector(
-                          onTap: () {
-                            Get.offAllNamed('/register');
-                          },
-                          child: Text(
-                            'Register',
-                            style: TextStyle(color: Colors.white, fontSize: 18),
-                          ),
-                        )
-                      ],
-                    ),
-                  ))
+              CustomTextField(
+                hintText: 'Enter Your Email',
+                icon: Icons.email,
+                focusNode: _emailFocus,
+                textEditingController: _emailController,
+              ),
+              Gap(20),
+              CustomTextField(
+                obscureText: true,
+                hintText: "Enter Your Password",
+                icon: Icons.key,
+                focusNode: _passwordFocus,
+                textEditingController: _passwordController,
+              ),
+              Gap(20),
+              Align(
+                alignment: Alignment.centerRight,
+                child: TextButton(
+                  onPressed: () {},
+                  child: Text(
+                    'Forgot Password?',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                ),
+              ),
+              Gap(30),
+              Obx(() => CustomButton(
+                    buttonText: _isLoading.value ? "Loading..." : 'Login',
+                    onTap: login,
+                  )),
+              Gap(80),
+              TextButton(
+                onPressed: () {
+                  Get.offNamed('/register');
+                },
+                child: Text(
+                  'New User? Sign Up',
+                  style: TextStyle(color: Colors.white),
+                ),
+              ),
             ],
           ),
         ),

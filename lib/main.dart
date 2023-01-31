@@ -1,8 +1,9 @@
-import 'package:firebase_auth/screens/homepage.dart';
-import 'package:firebase_auth/screens/login.dart';
-import 'package:firebase_auth/screens/register.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+
+import './screens/homepage.dart';
+import './screens/login.dart';
+import './screens/register.dart';
 
 void main() {
   runApp(const MyApp());

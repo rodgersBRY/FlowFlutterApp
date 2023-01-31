@@ -17,6 +17,7 @@ dependencies:
   gap: ^2.0.0
   get: 4.3.8
   shared_preferences:
+  connectycube_sdk: ^2.4.0
 
 dev_dependencies:
   flutter_test:

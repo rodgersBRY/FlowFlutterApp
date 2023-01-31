@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:gap/gap.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -27,6 +26,16 @@ class _HomePageState extends State<HomePage> {
     username.value = name!;
   }
 
+  logout() async {
+    final SharedPreferences sharedPreferences =
+        await SharedPreferences.getInstance();
+    sharedPreferences.remove('name');
+    sharedPreferences.remove('token');
+    sharedPreferences.remove('email');
+
+    Get.offAllNamed('/login');
+  }
+
   @override
   void initState() {
     getValidation().whenComplete(() async {
@@ -52,42 +61,37 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Obx(() => Scaffold(
-            body: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 15),
-              child: Column(
-                children: [
-                  Gap(20),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        '$username',
-                        style: TextStyle(fontSize: 20),
-                      ),
-                      IconButton(
-                        icon: Icon(Icons.logout),
-                        onPressed: () async {
-                          final SharedPreferences sharedPreferences =
-                              await SharedPreferences.getInstance();
-                          sharedPreferences.remove('token');
-                          sharedPreferences.remove('name');
-                          sharedPreferences.remove('email');
-
-                          Get.offNamed('/login');
-                        },
-                      ),
-                    ],
-                  ),
-                  Gap(30),
-                  Expanded(child: _pages.elementAt(_selectedIndex.value))
-                ],
+            appBar: AppBar(
+              toolbarHeight: 60,
+              backgroundColor: Color.fromARGB(255, 114, 140, 179),
+              elevation: 0,
+              leading: Padding(
+                padding: const EdgeInsets.all(7),
+                child: CircleAvatar(
+                  radius: 25,
+                  backgroundImage: AssetImage('assets/profile-pic.jpg'),
+                ),
               ),
+              title: Obx(() => Text(
+                    username.value,
+                    style: TextStyle(color: Colors.white),
+                  )),
+              actions: [
+                Padding(
+                  padding: const EdgeInsets.only(right: 8),
+                  child: IconButton(
+                    onPressed: logout,
+                    icon: Icon(Icons.logout, color: Colors.white),
+                  ),
+                ),
+              ],
             ),
+            body: _pages.elementAt(_selectedIndex.value),
             bottomNavigationBar: BottomNavigationBar(
               currentIndex: _selectedIndex.value,
               onTap: _switchTabs,
               elevation: 0,
-              selectedItemColor: Colors.cyan,
+              selectedItemColor: Color.fromARGB(255, 114, 140, 179),
               unselectedItemColor: Colors.grey,
               items: [
                 BottomNavigationBarItem(

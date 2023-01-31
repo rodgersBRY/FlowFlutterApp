@@ -92,7 +92,7 @@ class _LoginPageState extends State<LoginPage> {
                 focusNode: _passwordFocus,
                 textEditingController: _passwordController,
               ),
-              Gap(20),
+              Gap(10),
               Align(
                 alignment: Alignment.centerRight,
                 child: TextButton(
